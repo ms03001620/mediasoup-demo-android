@@ -72,23 +72,18 @@ public class RoomActivity extends AppCompatActivity {
     private void createRoom() {
         loadConfig();
         mRoomStore = new RoomStore();
-        initRoomClient();
+        mRoomClient = new RoomClient(this, mRoomStore, roomClientConfig.data, roomClientConfig.roomOptions);
 
         getViewModelStore().clear();
         initViewModel();
-        if (mRoomClient != null) {
-            mRoomClient.join();
-        }
+
+        mRoomClient.join();
     }
 
     private void initCamera() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String camera = preferences.getString("camera", "front");
         PeerConnectionUtils.setPreferCameraFace(camera);
-    }
-
-    private void initRoomClient() {
-        mRoomClient = new RoomClient(this, mRoomStore, roomClientConfig.data, roomClientConfig.roomOptions);
     }
 
     private void initViewModel() {
