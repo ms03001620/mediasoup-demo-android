@@ -12,7 +12,12 @@ public class SplashScreenActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_splash_screen);
 
-    findViewById(R.id.mediasoup)
-        .postDelayed(() -> startActivity(new Intent(this, RoomActivity.class)), 1000);
+    findViewById(R.id.mediasoup).postDelayed(new Runnable() {
+      @Override
+      public void run() {
+        startActivity(new Intent(SplashScreenActivity.this, RoomActivity.class));
+        finish();
+      }
+    }, 1500);
   }
 }
