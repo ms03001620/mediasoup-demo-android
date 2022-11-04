@@ -136,6 +136,10 @@ public class RoomClient extends RoomMessageHandler {
     mWorkHandler.post(() -> mPeerConnectionUtils = new PeerConnectionUtils());
   }
 
+  public RoomStore getRoomStore() {
+    return mStore;
+  }
+
   @Async
   public void join() {
     Logger.d(TAG, "join() " + this.mProtooUrl);
