@@ -60,6 +60,7 @@ public class RoomActivity extends AppCompatActivity {
 
     private void loadConfig(){
         roomClientConfig.loadFromShare(getApplicationContext());
+        roomClientConfig.print();
     }
 
     private void initView() {
