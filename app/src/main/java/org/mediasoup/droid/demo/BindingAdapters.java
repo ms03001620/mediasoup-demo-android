@@ -20,8 +20,10 @@ public class BindingAdapters {
     private static final String TAG = "BindingAdapters";
 
     @BindingAdapter({"bind:edias_state", "bind:edias_state_animation"})
-    public static void roomState(
-            ImageView view, RoomClient.ConnectionState state, Animation animation) {
+    public static void roomState(ImageView view, RoomClient.ConnectionState state, Animation animation) {
+        if (animation == null) {
+            return;
+        }
         if (state == null) {
             return;
         }
@@ -70,6 +72,9 @@ public class BindingAdapters {
     @BindingAdapter({"bind:edias_restart_ice_progress", "bind:edias_restart_ice_ani"})
     public static void restartIce(ImageView view, boolean restart_ice_in_progress, Animation animation) {
         Log.d(TAG, "restartIce() " + restart_ice_in_progress);
+        if (animation == null) {
+            return;
+        }
         view.setEnabled(!restart_ice_in_progress);
         if (restart_ice_in_progress) {
             view.startAnimation(animation);
