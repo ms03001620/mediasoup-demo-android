@@ -18,10 +18,6 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
-import com.nabinbhandari.android.permissions.PermissionHandler;
-import com.nabinbhandari.android.permissions.Permissions;
-
 import org.mediasoup.droid.Logger;
 import org.mediasoup.droid.MediasoupClient;
 import org.mediasoup.droid.demo.adapter.PeerAdapter;
@@ -57,9 +53,9 @@ public class RoomActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView();
+        initCamera();
         loadConfig();
         createRoom();
-        checkPermission();
     }
 
     private void loadConfig(){
@@ -73,13 +69,14 @@ public class RoomActivity extends AppCompatActivity {
     }
 
     private void createRoom() {
-        initCamera();
-
         mRoomStore = new RoomStore();
         initRoomClient();
 
         getViewModelStore().clear();
         initViewModel();
+        if (mRoomClient != null) {
+            mRoomClient.join();
+        }
     }
 
     private void initCamera() {
@@ -172,29 +169,6 @@ public class RoomActivity extends AppCompatActivity {
         mRoomStore.getNotify().observe(this, notifyObserver);
     }
 
-    private PermissionHandler permissionHandler =
-            new PermissionHandler() {
-                @Override
-                public void onGranted() {
-                    Logger.d(TAG, "permission granted");
-                    if (mRoomClient != null) {
-                        mRoomClient.join();
-                    }
-                }
-            };
-
-    private void checkPermission() {
-        String[] permissions = {
-                Manifest.permission.INTERNET,
-                Manifest.permission.RECORD_AUDIO,
-                Manifest.permission.CAMERA,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-        };
-        String rationale = "Please provide permissions";
-        Permissions.Options options =
-                new Permissions.Options().setRationaleDialogTitle("Info").setSettingsDialogTitle("Warning");
-        Permissions.check(this, permissions, rationale, options, permissionHandler);
-    }
 
     private void destroyRoom() {
         if (mRoomClient != null) {
@@ -233,7 +207,6 @@ public class RoomActivity extends AppCompatActivity {
             // local config and reCreate room related.
             createRoom();
             // check permission again. if granted, join room.
-            checkPermission();
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
