@@ -1,6 +1,5 @@
 package org.mediasoup.droid.demo;
 
-import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -18,6 +17,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
 import org.mediasoup.droid.Logger;
 import org.mediasoup.droid.MediasoupClient;
 import org.mediasoup.droid.demo.adapter.PeerAdapter;
@@ -53,12 +53,10 @@ public class RoomActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView();
-        initCamera();
-
         createRoom();
     }
 
-    private void loadConfig(){
+    private void loadConfig() {
         roomClientConfig.loadFromShare(getApplicationContext());
         roomClientConfig.print();
     }
@@ -71,12 +69,10 @@ public class RoomActivity extends AppCompatActivity {
 
     private void createRoom() {
         loadConfig();
+        initCamera();
         mRoomStore = new RoomStore();
         mRoomClient = new RoomClient(this, mRoomStore, roomClientConfig.data, roomClientConfig.roomOptions);
-
-        getViewModelStore().clear();
         initViewModel();
-
         mRoomClient.join();
     }
 
@@ -104,65 +100,58 @@ public class RoomActivity extends AppCompatActivity {
         meProps.connect(this);
         mBinding.me.setProps(meProps, mRoomClient);
 
-        mBinding.hideVideos.setOnClickListener(
-                v -> {
-                    Me me = meProps.getMe().get();
-                    if (me != null) {
-                        if (me.isAudioOnly()) {
-                            mRoomClient.disableAudioOnly();
-                        } else {
-                            mRoomClient.enableAudioOnly();
-                        }
-                    }
-                });
-        mBinding.muteAudio.setOnClickListener(
-                v -> {
-                    Me me = meProps.getMe().get();
-                    if (me != null) {
-                        if (me.isAudioMuted()) {
-                            mRoomClient.unmuteAudio();
-                        } else {
-                            mRoomClient.muteAudio();
-                        }
-                    }
-                });
+        mBinding.hideVideos.setOnClickListener(v -> {
+            Me me = meProps.getMe().get();
+            if (me != null) {
+                if (me.isAudioOnly()) {
+                    mRoomClient.disableAudioOnly();
+                } else {
+                    mRoomClient.enableAudioOnly();
+                }
+            }
+        });
+        mBinding.muteAudio.setOnClickListener(v -> {
+            Me me = meProps.getMe().get();
+            if (me != null) {
+                if (me.isAudioMuted()) {
+                    mRoomClient.unmuteAudio();
+                } else {
+                    mRoomClient.muteAudio();
+                }
+            }
+        });
         mBinding.restartIce.setOnClickListener(v -> mRoomClient.restartIce());
 
         // Peers.
         mPeerAdapter = new PeerAdapter(mRoomStore, this, mRoomClient);
         mBinding.remotePeers.setLayoutManager(new LinearLayoutManager(this));
         mBinding.remotePeers.setAdapter(mPeerAdapter);
-        mRoomStore
-                .getPeers()
-                .observe(
-                        this,
-                        peers -> {
-                            List<Peer> peersList = peers.getAllPeers();
-                            if (peersList.isEmpty()) {
-                                mBinding.remotePeers.setVisibility(View.GONE);
-                                mBinding.roomState.setVisibility(View.VISIBLE);
-                            } else {
-                                mBinding.remotePeers.setVisibility(View.VISIBLE);
-                                mBinding.roomState.setVisibility(View.GONE);
-                            }
-                            mPeerAdapter.replacePeers(peersList);
-                        });
+        mRoomStore.getPeers().observe(this, peers -> {
+            List<Peer> peersList = peers.getAllPeers();
+            if (peersList.isEmpty()) {
+                mBinding.remotePeers.setVisibility(View.GONE);
+                mBinding.roomState.setVisibility(View.VISIBLE);
+            } else {
+                mBinding.remotePeers.setVisibility(View.VISIBLE);
+                mBinding.roomState.setVisibility(View.GONE);
+            }
+            mPeerAdapter.replacePeers(peersList);
+        });
 
         // Notify
-        final Observer<Notify> notifyObserver =
-                notify -> {
-                    if (notify == null) {
-                        return;
-                    }
-                    if ("error".equals(notify.getType())) {
-                        Toast toast = Toast.makeText(this, notify.getText(), notify.getTimeout());
-                        TextView toastMessage = toast.getView().findViewById(android.R.id.message);
-                        toastMessage.setTextColor(Color.RED);
-                        toast.show();
-                    } else {
-                        Toast.makeText(this, notify.getText(), notify.getTimeout()).show();
-                    }
-                };
+        final Observer<Notify> notifyObserver = notify -> {
+            if (notify == null) {
+                return;
+            }
+            if ("error".equals(notify.getType())) {
+                Toast toast = Toast.makeText(this, notify.getText(), notify.getTimeout());
+                TextView toastMessage = toast.getView().findViewById(android.R.id.message);
+                toastMessage.setTextColor(Color.RED);
+                toast.show();
+            } else {
+                Toast.makeText(this, notify.getText(), notify.getTimeout()).show();
+            }
+        };
         mRoomStore.getNotify().observe(this, notifyObserver);
     }
 
@@ -172,9 +161,7 @@ public class RoomActivity extends AppCompatActivity {
             mRoomClient.close();
             mRoomClient = null;
         }
-        if (mRoomStore != null) {
-            mRoomStore = null;
-        }
+        getViewModelStore().clear();
     }
 
     @Override
