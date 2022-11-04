@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,7 +31,6 @@ import org.mediasoup.droid.demo.vm.MeProps;
 import org.mediasoup.droid.demo.vm.RoomProps;
 import org.mediasoup.droid.lib.PeerConnectionUtils;
 import org.mediasoup.droid.lib.RoomClient;
-import org.mediasoup.droid.lib.RoomOptions;
 import org.mediasoup.droid.lib.lv.RoomStore;
 import org.mediasoup.droid.lib.model.Me;
 import org.mediasoup.droid.lib.model.Notify;
@@ -41,17 +39,14 @@ import org.mediasoup.droid.lib.model.Peer;
 import java.util.List;
 
 import static org.mediasoup.droid.demo.utils.ClipboardCopy.clipboardCopy;
-import static org.mediasoup.droid.lib.Utils.getRandomString;
 
 public class RoomActivity extends AppCompatActivity {
 
     private static final String TAG = RoomActivity.class.getSimpleName();
     private static final int REQUEST_CODE_SETTING = 1;
 
-    private String mRoomId, mPeerId, mDisplayName;
-    private boolean mForceH264, mForceVP9;
+    RoomClientConfig roomClientConfig = new RoomClientConfig();
 
-    private RoomOptions mOptions;
     private RoomStore mRoomStore;
     private RoomClient mRoomClient;
 
@@ -61,14 +56,24 @@ public class RoomActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_room);
+        initView();
+        loadConfig();
         createRoom();
         checkPermission();
     }
 
+    private void loadConfig(){
+        roomClientConfig.loadFromShare(getApplicationContext());
+    }
+
+    private void initView() {
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_room);
+        // Display version number.
+        ((TextView) findViewById(R.id.version)).setText(String.valueOf(MediasoupClient.version()));
+    }
+
     private void createRoom() {
-        mOptions = new RoomOptions();
-        loadRoomConfig();
+        initCamera();
 
         mRoomStore = new RoomStore();
         initRoomClient();
@@ -77,45 +82,14 @@ public class RoomActivity extends AppCompatActivity {
         initViewModel();
     }
 
-    private void loadRoomConfig() {
+    private void initCamera() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        // Room initial config.
-        mRoomId = preferences.getString("roomId", "");
-        mPeerId = preferences.getString("peerId", "");
-        mDisplayName = preferences.getString("displayName", "");
-        mForceH264 = preferences.getBoolean("forceH264", false);
-        mForceVP9 = preferences.getBoolean("forceVP9", false);
-        if (TextUtils.isEmpty(mRoomId)) {
-            mRoomId = getRandomString(8);
-            preferences.edit().putString("roomId", mRoomId).apply();
-        }
-        if (TextUtils.isEmpty(mPeerId)) {
-            mPeerId = getRandomString(8);
-            preferences.edit().putString("peerId", mPeerId).apply();
-        }
-        if (TextUtils.isEmpty(mDisplayName)) {
-            mDisplayName = getRandomString(8);
-            preferences.edit().putString("displayName", mDisplayName).apply();
-        }
-
-        // Room action config.
-        mOptions.setProduce(preferences.getBoolean("produce", true));
-        mOptions.setConsume(preferences.getBoolean("consume", true));
-        mOptions.setForceTcp(preferences.getBoolean("forceTcp", false));
-
-        // Device config.
         String camera = preferences.getString("camera", "front");
         PeerConnectionUtils.setPreferCameraFace(camera);
-
-        // Display version number.
-        ((TextView) findViewById(R.id.version)).setText(String.valueOf(MediasoupClient.version()));
     }
 
     private void initRoomClient() {
-        mRoomClient =
-                new RoomClient(
-                        this, mRoomStore, mRoomId, mPeerId, mDisplayName, mForceH264, mForceVP9, mOptions);
+        mRoomClient = new RoomClient(this, mRoomStore, roomClientConfig.data, roomClientConfig.roomOptions);
     }
 
     private void initViewModel() {

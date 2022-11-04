@@ -22,6 +22,8 @@ import org.mediasoup.droid.Producer;
 import org.mediasoup.droid.RecvTransport;
 import org.mediasoup.droid.SendTransport;
 import org.mediasoup.droid.Transport;
+import org.mediasoup.droid.demo.RoomClientConfig;
+import org.mediasoup.droid.demo.RoomClientConfigData;
 import org.mediasoup.droid.lib.lv.RoomStore;
 import org.mediasoup.droid.lib.socket.WebSocketTransport;
 import org.protoojs.droid.Message;
@@ -94,38 +96,19 @@ public class RoomClient extends RoomMessageHandler {
   private SharedPreferences mPreferences;
 
   public RoomClient(
-      Context context, RoomStore roomStore, String roomId, String peerId, String displayName) {
-    this(context, roomStore, roomId, peerId, displayName, false, false, null);
-  }
-
-  public RoomClient(
       Context context,
       RoomStore roomStore,
-      String roomId,
-      String peerId,
-      String displayName,
-      RoomOptions options) {
-    this(context, roomStore, roomId, peerId, displayName, false, false, options);
-  }
-
-  public RoomClient(
-      Context context,
-      RoomStore roomStore,
-      String roomId,
-      String peerId,
-      String displayName,
-      boolean forceH264,
-      boolean forceVP9,
+      RoomClientConfigData configData,
       RoomOptions options) {
     super(roomStore);
     this.mContext = context.getApplicationContext();
     this.mOptions = options == null ? new RoomOptions() : options;
-    this.mDisplayName = displayName;
+    this.mDisplayName = configData.getDisplayName();
     this.mClosed = false;
-    this.mProtooUrl = UrlFactory.getProtooUrl(roomId, peerId, forceH264, forceVP9);
+    this.mProtooUrl = UrlFactory.getProtooUrl(configData.getRoomId(), configData.getPeerId(), configData.getForceH264(), configData.getForceVp9());
 
-    this.mStore.setMe(peerId, displayName, this.mOptions.getDevice());
-    this.mStore.setRoomUrl(roomId, UrlFactory.getInvitationLink(roomId, forceH264, forceVP9));
+    this.mStore.setMe(configData.getPeerId(), configData.getDisplayName(), this.mOptions.getDevice());
+    this.mStore.setRoomUrl(configData.getRoomId(), UrlFactory.getInvitationLink(configData.getRoomId(), configData.getForceH264(), configData.getForceVp9()));
     this.mPreferences = PreferenceManager.getDefaultSharedPreferences(this.mContext);
 
     // init worker handler.
