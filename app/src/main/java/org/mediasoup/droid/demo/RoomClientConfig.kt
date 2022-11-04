@@ -26,11 +26,11 @@ class RoomClientConfig {
 
     private fun loadConfigData(preferences: SharedPreferences) {
         // Room initial config.
-        var mRoomId = preferences.getString("roomId", "")
-        var mPeerId = preferences.getString("peerId", "")
-        var mDisplayName = preferences.getString("displayName", "")
-        var mForceH264 = preferences.getBoolean("forceH264", false)
-        var mForceVP9 = preferences.getBoolean("forceVP9", false)
+        var mRoomId = preferences.getString("roomId", "") ?: ""
+        var mPeerId = preferences.getString("peerId", "")?:""
+        var mDisplayName = preferences.getString("displayName", "")?:""
+        val mForceH264 = preferences.getBoolean("forceH264", false)
+        val mForceVP9 = preferences.getBoolean("forceVP9", false)
         if (TextUtils.isEmpty(mRoomId)) {
             mRoomId = Utils.getRandomString(8)
             preferences.edit().putString("roomId", mRoomId).apply()
