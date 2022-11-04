@@ -54,7 +54,7 @@ public class RoomActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         initView();
         initCamera();
-        loadConfig();
+
         createRoom();
     }
 
@@ -70,6 +70,7 @@ public class RoomActivity extends AppCompatActivity {
     }
 
     private void createRoom() {
+        loadConfig();
         mRoomStore = new RoomStore();
         initRoomClient();
 
