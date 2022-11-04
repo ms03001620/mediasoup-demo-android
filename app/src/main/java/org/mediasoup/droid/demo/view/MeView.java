@@ -45,6 +45,9 @@ public class MeView extends RelativeLayout {
   ViewMeBindingImpl mBinding;
 
   private void init(Context context) {
+      if(isInEditMode()){
+          return;
+      }
     mBinding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.view_me, this, true);
     mBinding.peerView.videoRenderer.init(PeerConnectionUtils.getEglContext(), null);
   }
