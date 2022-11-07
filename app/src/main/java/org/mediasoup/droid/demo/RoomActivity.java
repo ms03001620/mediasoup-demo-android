@@ -122,7 +122,7 @@ public class RoomActivity extends AppCompatActivity {
         mBinding.restartIce.setOnClickListener(v -> mRoomClient.restartIce());
 
         // Peers.
-        mPeerAdapter = new PeerAdapter(this, mRoomClient.getRoomStore());
+        mPeerAdapter = new PeerAdapter(this, mRoomStore);
         mBinding.remotePeers.setLayoutManager(new LinearLayoutManager(this));
         mBinding.remotePeers.setAdapter(mPeerAdapter);
         mRoomStore.getPeers().observe(this, peers -> {

@@ -50,8 +50,7 @@ public class PeerAdapter extends RecyclerView.Adapter<PeerAdapter.PeerViewHolder
         containerHeight = parent.getHeight();
         Context context = parent.getContext();
         View view = LayoutInflater.from(context).inflate(R.layout.item_remote_peer, parent, false);
-        return new PeerViewHolder(
-                view, new PeerProps(((AppCompatActivity) context).getApplication(), mStore));
+        return new PeerViewHolder(view, context, mStore);
     }
 
     @Override
@@ -87,10 +86,10 @@ public class PeerAdapter extends RecyclerView.Adapter<PeerAdapter.PeerViewHolder
         @NonNull
         final PeerProps mPeerProps;
 
-        PeerViewHolder(@NonNull View view, @NonNull PeerProps peerProps) {
+        PeerViewHolder(@NonNull View view, @NonNull Context context, RoomStore roomStore) {
             super(view);
             mPeerView = view.findViewById(R.id.remote_peer);
-            mPeerProps = peerProps;
+            mPeerProps = new PeerProps(((AppCompatActivity) context).getApplication(), roomStore);
         }
 
         void bind(LifecycleOwner owner, @NonNull Peer peer) {
