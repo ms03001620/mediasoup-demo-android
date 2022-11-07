@@ -34,10 +34,9 @@ public class PeerAdapter extends RecyclerView.Adapter<PeerAdapter.PeerViewHolder
   private int containerHeight;
 
   public PeerAdapter(
-      @NonNull RoomStore store,
       @NonNull LifecycleOwner lifecycleOwner,
       @NonNull RoomClient roomClient) {
-    mStore = store;
+    mStore = roomClient.getRoomStore();
     mLifecycleOwner = lifecycleOwner;
     mRoomClient = roomClient;
   }
