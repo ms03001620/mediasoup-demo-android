@@ -53,7 +53,9 @@ class RoomClientConfig {
     }
 
     fun loadFixedRoomId() {
-        preferences.edit().putString(ROOM_ID, "c5bwfyow").apply()
+        if ((preferences.getString(ROOM_ID, "") ?: "") != "c5bwfyow") {
+            preferences.edit().putString(ROOM_ID, "c5bwfyow").apply()
+        }
     }
 
     private fun loadRoomOption(preferences: SharedPreferences) {
