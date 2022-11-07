@@ -10,9 +10,10 @@ import org.mediasoup.droid.lib.Utils
 class RoomClientConfig {
     lateinit var data:  RoomClientConfigData
     lateinit var roomOptions: RoomOptions
+    lateinit var preferences: SharedPreferences
 
     fun loadFromShare(context: Context) {
-        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        preferences = PreferenceManager.getDefaultSharedPreferences(context)
         generateDefaultValue(preferences)
         loadConfigData(preferences)
         loadRoomOption(preferences)
@@ -49,6 +50,10 @@ class RoomClientConfig {
         if (preferences.contains(FORCE_VP_9).not()) {
             preferences.edit().putBoolean(FORCE_VP_9, false).apply()
         }
+    }
+
+    fun loadFixedRoomId() {
+        preferences.edit().putString(ROOM_ID, "c5bwfyow").apply()
     }
 
     private fun loadRoomOption(preferences: SharedPreferences) {

@@ -171,6 +171,9 @@ public class RoomActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         if (item.getItemId() == R.id.setting) {
+            if (BuildConfig.DEBUG) {
+                roomClientConfig.loadFixedRoomId();
+            }
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivityForResult(intent, REQUEST_CODE_SETTING);
             return true;
