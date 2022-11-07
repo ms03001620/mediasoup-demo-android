@@ -647,11 +647,7 @@ public class RoomClient extends RoomMessageHandler {
 
             // Enable mic/webcam.
             if (mOptions.isProduce()) {
-                boolean canSendMic = mMediasoupDevice.canProduce("audio");
-                boolean canSendCam = mMediasoupDevice.canProduce("video");
-                mStore.setMediaCapabilities(canSendMic, canSendCam);
-                mMainHandler.post(this::enableMic);
-                mMainHandler.post(this::enableCam);
+               // enableMicAndCam();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -665,23 +661,50 @@ public class RoomClient extends RoomMessageHandler {
         }
     }
 
+    public void enableMicAndCam() {
+        try {
+            boolean canSendCam = mMediasoupDevice.canProduce("video");
+            boolean canSendMic = mMediasoupDevice.canProduce("audio");
+            if (mSendTransport == null) {
+                Logger.w(TAG, "enableMicAndCam() | mSendTransport doesn't ready");
+                return;
+            }
+            if (!mMediasoupDevice.isLoaded()) {
+                Logger.w(TAG, "enableMicAndCam() | not loaded");
+                return;
+            }
+            if (!mMediasoupDevice.canProduce("video")) {
+                Logger.w(TAG, "enableMicAndCam() | cannot produce video");
+                return;
+            }
+            if (!mMediasoupDevice.canProduce("audio")) {
+                Logger.w(TAG, "enableMicAndCam() | cannot produce audio");
+                return;
+            }
+            mStore.setMediaCapabilities(canSendMic, canSendCam);
+            mWorkHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    enableCamImpl();
+                }
+            });
+            mWorkHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    enableMicImpl();
+                }
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @WorkerThread
     private void enableMicImpl() {
         Logger.d(TAG, "enableMicImpl()");
         try {
             if (mMicProducer != null) {
-                return;
-            }
-            if (!mMediasoupDevice.isLoaded()) {
-                Logger.w(TAG, "enableMic() | not loaded");
-                return;
-            }
-            if (!mMediasoupDevice.canProduce("audio")) {
-                Logger.w(TAG, "enableMic() | cannot produce audio");
-                return;
-            }
-            if (mSendTransport == null) {
-                Logger.w(TAG, "enableMic() | mSendTransport doesn't ready");
                 return;
             }
             if (mLocalAudioTrack == null) {
@@ -762,19 +785,6 @@ public class RoomClient extends RoomMessageHandler {
             if (mCamProducer != null) {
                 return;
             }
-            if (!mMediasoupDevice.isLoaded()) {
-                Logger.w(TAG, "enableCam() | not loaded");
-                return;
-            }
-            if (!mMediasoupDevice.canProduce("video")) {
-                Logger.w(TAG, "enableCam() | cannot produce video");
-                return;
-            }
-            if (mSendTransport == null) {
-                Logger.w(TAG, "enableCam() | mSendTransport doesn't ready");
-                return;
-            }
-
             if (mLocalVideoTrack == null) {
                 mLocalVideoTrack = mPeerConnectionUtils.createVideoTrack(mContext, "cam");
                 mLocalVideoTrack.setEnabled(true);

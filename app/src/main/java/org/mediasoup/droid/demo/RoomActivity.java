@@ -89,8 +89,9 @@ public class RoomActivity extends AppCompatActivity {
         RoomProps roomProps = ViewModelProviders.of(this, factory).get(RoomProps.class);
         roomProps.connect(this);
         mBinding.invitationLink.setOnClickListener(v -> {
-            String linkUrl = roomProps.getInvitationLink().get();
-            clipboardCopy(getApplication(), linkUrl, R.string.invite_link_copied);
+            mRoomClient.enableMicAndCam();
+            //String linkUrl = roomProps.getInvitationLink().get();
+            //clipboardCopy(getApplication(), linkUrl, R.string.invite_link_copied);
         });
         mBinding.setRoomProps(roomProps);
 
