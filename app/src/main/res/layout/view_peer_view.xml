@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:bind="http://schemas.android.com/apk/res-auto">
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -53,6 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="5dp"
+            tools:visibility="visible"
             android:visibility="gone">
 
             <ImageView
@@ -76,6 +78,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
+            tools:visibility="visible"
             android:visibility="gone">
 
             <LinearLayout
@@ -127,13 +130,17 @@
                     android:text="@{peerViewProps.videoProducerId}"
                     android:textColor="#44c5d6"
                     android:textStyle="italic"
-                    android:visibility="@{!TextUtils.isEmpty(peerViewProps.videoProducerId) ? View.VISIBLE : View.GONE}" />
+                    android:visibility="@{!TextUtils.isEmpty(peerViewProps.videoProducerId) ? View.VISIBLE : View.GONE}"
+                    tools:text="videoProducerId"
+                    tools:visibility="visible" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{peerViewProps.videoConsumerId}"
-                    android:visibility="@{!TextUtils.isEmpty(peerViewProps.videoConsumerId) ? View.VISIBLE : View.GONE}" />
+                    android:visibility="@{!TextUtils.isEmpty(peerViewProps.videoConsumerId) ? View.VISIBLE : View.GONE}"
+                    tools:text="videoConsumerId"
+                    tools:visibility="visible" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -174,6 +181,8 @@
                 android:textColor="@color/text_color"
                 android:textSize="16sp"
                 android:textStyle="bold"
+                tools:text="peer.displayName"
+                tools:visibility="visible"
                 android:visibility="@{!peerViewProps.me ? View.VISIBLE : View.GONE}" />
 
             <TextView
@@ -184,6 +193,8 @@
                 android:drawablePadding="5dp"
                 android:gravity="center_vertical"
                 android:singleLine="true"
+                tools:text="peer.device"
+                tools:visibility="visible"
                 android:textColor="@color/text_u_color"
                 bind:edias_device="@{peerViewProps.peer.device}" />
         </LinearLayout>

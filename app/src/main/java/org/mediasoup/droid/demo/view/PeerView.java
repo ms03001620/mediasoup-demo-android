@@ -49,7 +49,7 @@ public class PeerView extends RelativeLayout {
     mBinding.peerView.videoRenderer.init(PeerConnectionUtils.getEglContext(), null);
   }
 
-  public void setProps(PeerProps props, RoomClient roomClient) {
+  public void setProps(PeerProps props) {
     // set view model into included layout
     mBinding.peerView.setPeerViewProps(props);
 
