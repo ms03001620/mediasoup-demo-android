@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:bind="http://schemas.android.com/apk/res-auto">
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -77,6 +78,7 @@
                 android:clickable="@{!(meProps.me.camInProgress || meProps.me.shareInProgress)}"
                 android:padding="5dp"
                 android:src="@drawable/icon_share"
+                tools:visibility="visible"
                 android:visibility="gone"
                 bind:edias_share_state="@{meProps.shareState}" />
         </LinearLayout>
