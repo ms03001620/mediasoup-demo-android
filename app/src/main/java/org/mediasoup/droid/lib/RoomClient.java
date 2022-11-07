@@ -52,7 +52,7 @@ public class RoomClient extends RoomMessageHandler {
     // Android context.
     private final Context mContext;
     // PeerConnection util.
-    private PeerConnectionUtils mPeerConnectionUtils;
+    private LocalDeviceHelper localDeviceHelper;
     // Room mOptions.
     private final @NonNull
     RoomOptions mOptions;
@@ -70,12 +70,8 @@ public class RoomClient extends RoomMessageHandler {
     private SendTransport mSendTransport;
     // mediasoup Transport for receiving.
     private RecvTransport mRecvTransport;
-    // Local Audio Track for mic.
-    private AudioTrack mLocalAudioTrack;
     // Local mic mediasoup Producer.
     private Producer mMicProducer;
-    // local Video Track for cam.
-    private VideoTrack mLocalVideoTrack;
     // Local cam mediasoup Producer.
     private Producer mCamProducer;
     // TODO(Haiyangwu): Local share mediasoup Producer.
@@ -110,7 +106,10 @@ public class RoomClient extends RoomMessageHandler {
         handlerThread.start();
         mWorkHandler = new Handler(handlerThread.getLooper());
         mMainHandler = new Handler(Looper.getMainLooper());
-        mWorkHandler.post(() -> mPeerConnectionUtils = new PeerConnectionUtils());
+        mWorkHandler.post(() -> {
+            localDeviceHelper = new LocalDeviceHelper();
+            localDeviceHelper.start();
+        });
     }
 
     public RoomStore getRoomStore() {
@@ -171,7 +170,7 @@ public class RoomClient extends RoomMessageHandler {
     public void changeCam() {
         Logger.d(TAG, "changeCam()");
         mStore.setCamInProgress(true);
-        mWorkHandler.post(() -> mPeerConnectionUtils.switchCam(new CameraVideoCapturer.CameraSwitchHandler() {
+        mWorkHandler.post(() -> localDeviceHelper.switchCam(new CameraVideoCapturer.CameraSwitchHandler() {
             @Override
             public void onCameraSwitchDone(boolean b) {
                 mStore.setCamInProgress(false);
@@ -478,21 +477,11 @@ public class RoomClient extends RoomMessageHandler {
             disposeTransportDevice();
 
             // dispose audio track.
-            if (mLocalAudioTrack != null) {
-                mLocalAudioTrack.setEnabled(false);
-                mLocalAudioTrack.dispose();
-                mLocalAudioTrack = null;
-            }
-
+            localDeviceHelper.closeAudio();
             // dispose video track.
-            if (mLocalVideoTrack != null) {
-                mLocalVideoTrack.setEnabled(false);
-                mLocalVideoTrack.dispose();
-                mLocalVideoTrack = null;
-            }
+            localDeviceHelper.closeVideo();
 
-            // dispose peerConnection.
-            mPeerConnectionUtils.dispose();
+            localDeviceHelper.dispose();
 
             // quit worker handler thread.
             mWorkHandler.getLooper().quit();
@@ -707,25 +696,20 @@ public class RoomClient extends RoomMessageHandler {
             if (mMicProducer != null) {
                 return;
             }
-            if (mLocalAudioTrack == null) {
-                mLocalAudioTrack = mPeerConnectionUtils.createAudioTrack(mContext, "mic");
-                mLocalAudioTrack.setEnabled(true);
-            }
+            localDeviceHelper.enableMicImpl(mContext);
             mMicProducer = mSendTransport.produce(producer -> {
                 Logger.e(TAG, "onTransportClose(), micProducer");
                 if (mMicProducer != null) {
                     mStore.removeProducer(mMicProducer.getId());
                     mMicProducer = null;
                 }
-            }, mLocalAudioTrack, null, null);
+            }, localDeviceHelper.getAudioTrack(), null, null);
             mStore.addProducer(mMicProducer);
         } catch (MediasoupException e) {
             e.printStackTrace();
             logError("enableMic() | failed:", e);
             mStore.addNotify("error", "Error enabling microphone: " + e.getMessage());
-            if (mLocalAudioTrack != null) {
-                mLocalAudioTrack.setEnabled(false);
-            }
+            localDeviceHelper.setLocalAudioTrackEnable(false);
         }
     }
 
@@ -785,25 +769,20 @@ public class RoomClient extends RoomMessageHandler {
             if (mCamProducer != null) {
                 return;
             }
-            if (mLocalVideoTrack == null) {
-                mLocalVideoTrack = mPeerConnectionUtils.createVideoTrack(mContext, "cam");
-                mLocalVideoTrack.setEnabled(true);
-            }
+            localDeviceHelper.enableCamImpl(mContext);
             mCamProducer = mSendTransport.produce(producer -> {
                 Logger.e(TAG, "onTransportClose(), camProducer");
                 if (mCamProducer != null) {
                     mStore.removeProducer(mCamProducer.getId());
                     mCamProducer = null;
                 }
-            }, mLocalVideoTrack, null, null);
+            }, localDeviceHelper.getVideoTrack(), null, null);
             mStore.addProducer(mCamProducer);
         } catch (MediasoupException e) {
             e.printStackTrace();
             logError("enableWebcam() | failed:", e);
             mStore.addNotify("error", "Error enabling webcam: " + e.getMessage());
-            if (mLocalVideoTrack != null) {
-                mLocalVideoTrack.setEnabled(false);
-            }
+            localDeviceHelper.setLocalVideoTrackEnable(false);
         }
     }
 
