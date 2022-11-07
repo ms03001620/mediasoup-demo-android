@@ -59,9 +59,9 @@ class RoomClientConfig {
     }
 
     private fun loadConfigData(preferences: SharedPreferences) {
-        val mRoomId = preferences.getString(ROOM_ID, "")
-        val mPeerId = preferences.getString(PEER_ID, "")
-        val mDisplayName = preferences.getString(DISPLAY_NAME, "")
+        val mRoomId = preferences.getString(ROOM_ID, "")?:""
+        val mPeerId = preferences.getString(PEER_ID, "")?:""
+        val mDisplayName = preferences.getString(DISPLAY_NAME, "")?:""
         val mForceH264 = preferences.getBoolean(FORCE_H_264, false)
         val mForceVP9 = preferences.getBoolean(FORCE_VP_9, false)
 

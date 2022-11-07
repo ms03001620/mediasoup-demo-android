@@ -143,12 +143,10 @@ public class RoomActivity extends AppCompatActivity {
                 return;
             }
             if ("error".equals(notify.getType())) {
-                Toast toast = Toast.makeText(this, notify.getText(), notify.getTimeout());
-                TextView toastMessage = toast.getView().findViewById(android.R.id.message);
-                toastMessage.setTextColor(Color.RED);
+                Toast toast = Toast.makeText(this, notify.getText(), Toast.LENGTH_LONG);
                 toast.show();
             } else {
-                Toast.makeText(this, notify.getText(), notify.getTimeout()).show();
+                Toast.makeText(this, notify.getText(), Toast.LENGTH_LONG).show();
             }
         };
         mRoomStore.getNotify().observe(this, notifyObserver);
