@@ -3,6 +3,7 @@ package org.mediasoup.droid.demo;
 import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,7 +16,13 @@ public class SplashScreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+        initVersion();
         checkPermission();
+    }
+
+    private void initVersion() {
+        TextView tvVer = (TextView) findViewById(R.id.text_ver);
+        tvVer.setText(BuildConfig.VERSION_NAME + "-" + BuildConfig.VERSION_CODE);
     }
 
     private void enterMain() {

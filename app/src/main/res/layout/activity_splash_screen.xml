@@ -13,37 +13,53 @@
         android:layout_weight="0.8" />
 
     <LinearLayout
-        android:id="@+id/mediasoup"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <TextView
+        <LinearLayout
+            android:id="@+id/mediasoup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="M"
-            android:textSize="50sp" />
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="M"
+                android:textSize="50sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="e"
+                android:textColor="@color/colorAccent"
+                android:textSize="50sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="dia"
+                android:textSize="50sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="soup"
+                android:textColor="@color/colorAccent"
+                android:textSize="50sp" />
+        </LinearLayout>
 
         <TextView
+            android:id="@+id/text_ver"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="e"
-            android:textColor="@color/colorAccent"
-            android:textSize="50sp" />
+            android:layout_gravity="center"
+            android:text="version"
+            android:textSize="12sp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="dia"
-            android:textSize="50sp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="soup"
-            android:textColor="@color/colorAccent"
-            android:textSize="50sp" />
     </LinearLayout>
 
     <View
