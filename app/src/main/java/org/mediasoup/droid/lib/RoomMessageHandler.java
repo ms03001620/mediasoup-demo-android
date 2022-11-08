@@ -142,7 +142,7 @@ class RoomMessageHandler {
         }
       default:
         {
-          Logger.e(TAG, "unknown protoo notification.method " + notification.getMethod());
+          Logger.v(TAG, "unknown protoo notification.method " + notification.getMethod());
         }
     }
   }
