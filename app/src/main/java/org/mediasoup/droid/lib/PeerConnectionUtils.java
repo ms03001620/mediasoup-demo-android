@@ -247,6 +247,29 @@ public class PeerConnectionUtils {
         return mPeerConnectionFactory.createVideoTrack(id, mVideoSource);
     }
 
+    public void disposeAudio() {
+        Logger.w(TAG, "disposeAudio()");
+        mThreadChecker.checkIsOnValidThread();
+        if (mAudioSource != null) {
+            mAudioSource.dispose();
+            mAudioSource = null;
+        }
+    }
+
+    public void disposeVideo() {
+        Logger.w(TAG, "disposeVideo()");
+        mThreadChecker.checkIsOnValidThread();
+        if (mCamCapture != null) {
+            mCamCapture.dispose();
+            mCamCapture = null;
+        }
+
+        if (mVideoSource != null) {
+            mVideoSource.dispose();
+            mVideoSource = null;
+        }
+    }
+
     public void dispose() {
         Logger.w(TAG, "dispose()");
         mThreadChecker.checkIsOnValidThread();

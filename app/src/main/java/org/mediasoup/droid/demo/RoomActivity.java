@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,6 +64,7 @@ public class RoomActivity extends AppCompatActivity {
 
     private void initView() {
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_room);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         // Display version number.
         ((TextView) findViewById(R.id.version)).setText(String.valueOf(MediasoupClient.version()));
     }
@@ -89,9 +91,9 @@ public class RoomActivity extends AppCompatActivity {
         RoomProps roomProps = ViewModelProviders.of(this, factory).get(RoomProps.class);
         roomProps.connect(this);
         mBinding.invitationLink.setOnClickListener(v -> {
-            mRoomClient.enableMicAndCam();
-            //String linkUrl = roomProps.getInvitationLink().get();
-            //clipboardCopy(getApplication(), linkUrl, R.string.invite_link_copied);
+            //mRoomClient.enableMicAndCam();
+            String linkUrl = roomProps.getInvitationLink().get();
+            clipboardCopy(getApplication(), linkUrl, R.string.invite_link_copied);
         });
         mBinding.setRoomProps(roomProps);
 

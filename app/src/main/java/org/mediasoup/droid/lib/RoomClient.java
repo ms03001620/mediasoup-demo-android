@@ -476,11 +476,6 @@ public class RoomClient extends RoomMessageHandler {
             // dispose all transport and device.
             disposeTransportDevice();
 
-            // dispose audio track.
-            localDeviceHelper.closeAudio();
-            // dispose video track.
-            localDeviceHelper.closeVideo();
-
             localDeviceHelper.dispose();
 
             // quit worker handler thread.
@@ -636,7 +631,7 @@ public class RoomClient extends RoomMessageHandler {
 
             // Enable mic/webcam.
             if (mOptions.isProduce()) {
-               // enableMicAndCam();
+                enableMicAndCam();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -675,15 +670,9 @@ public class RoomClient extends RoomMessageHandler {
                 @Override
                 public void run() {
                     enableCamImpl();
-                }
-            });
-            mWorkHandler.post(new Runnable() {
-                @Override
-                public void run() {
                     enableMicImpl();
                 }
             });
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -730,6 +719,7 @@ public class RoomClient extends RoomMessageHandler {
             mStore.addNotify("error", "Error closing server-side mic Producer: " + e.getMessage());
         }
         mMicProducer = null;
+        localDeviceHelper.disposeAudio();
     }
 
     @WorkerThread
@@ -802,6 +792,8 @@ public class RoomClient extends RoomMessageHandler {
             mStore.addNotify("error", "Error closing server-side webcam Producer: " + e.getMessage());
         }
         mCamProducer = null;
+
+        localDeviceHelper.disposeVideo();
     }
 
     @WorkerThread

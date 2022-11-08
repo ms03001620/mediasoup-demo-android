@@ -46,20 +46,32 @@ class LocalDeviceHelper {
         localAudioTrack?.setEnabled(enable)
     }
 
-    fun closeVideo() {
+    private fun closeVideo() {
         localVideoTrack?.setEnabled(false)
         localVideoTrack?.dispose()
         localVideoTrack = null
     }
 
-    fun closeAudio() {
+    private fun closeAudio() {
         localAudioTrack?.setEnabled(false)
         localAudioTrack?.dispose()
         localAudioTrack = null
     }
 
     fun dispose() {
+        closeAudio()
+        closeVideo()
         peerConnectionUtils.dispose()
+    }
+
+    fun disposeVideo() {
+        closeVideo()
+        peerConnectionUtils.disposeVideo()
+    }
+
+    fun disposeAudio(){
+        closeAudio()
+        peerConnectionUtils.disposeAudio()
     }
 
 
