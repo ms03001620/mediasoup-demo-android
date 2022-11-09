@@ -596,7 +596,7 @@ public class RoomClient extends RoomMessageHandler {
         try {
             mMediasoupDevice = new Device();
             String routerRtpCapabilities = mProtoo.syncRequest("getRouterRtpCapabilities");
-            mMediasoupDevice.load(routerRtpCapabilities);
+            mMediasoupDevice.load(routerRtpCapabilities, null);
             String rtpCapabilities = mMediasoupDevice.getRtpCapabilities();
 
             // Create mediasoup Transport for sending (unless we don't want to produce).
@@ -692,7 +692,7 @@ public class RoomClient extends RoomMessageHandler {
                     mStore.removeProducer(mMicProducer.getId());
                     mMicProducer = null;
                 }
-            }, localDeviceHelper.getAudioTrack(), null, null);
+            }, localDeviceHelper.getAudioTrack(), null, null, null);
             mStore.addProducer(mMicProducer);
         } catch (MediasoupException e) {
             e.printStackTrace();
@@ -766,7 +766,7 @@ public class RoomClient extends RoomMessageHandler {
                     mStore.removeProducer(mCamProducer.getId());
                     mCamProducer = null;
                 }
-            }, localDeviceHelper.getVideoTrack(), null, null);
+            }, localDeviceHelper.getVideoTrack(), null, null, null);
             mStore.addProducer(mCamProducer);
         } catch (MediasoupException e) {
             e.printStackTrace();
@@ -815,8 +815,10 @@ public class RoomClient extends RoomMessageHandler {
         String dtlsParameters = info.optString("dtlsParameters");
         String sctpParameters = info.optString("sctpParameters");
 
-        mSendTransport = mMediasoupDevice.createSendTransport(sendTransportListener, id, iceParameters, iceCandidates, dtlsParameters);
+        mSendTransport = mMediasoupDevice.createSendTransport(sendTransportListener, id, iceParameters, iceCandidates, dtlsParameters, mocKSctpParameters);
     }
+
+    String mocKSctpParameters = "{\"MIS\":1024,\"OS\":1024,\"maxMessageSize\":2000000,\"numStreams\":2048,\"port\":5000}";
 
     @WorkerThread
     private void createRecvTransport() throws ProtooException, JSONException, MediasoupException {
@@ -837,7 +839,7 @@ public class RoomClient extends RoomMessageHandler {
         String dtlsParameters = info.optString("dtlsParameters");
         String sctpParameters = info.optString("sctpParameters");
 
-        mRecvTransport = mMediasoupDevice.createRecvTransport(recvTransportListener, id, iceParameters, iceCandidates, dtlsParameters, null);
+        mRecvTransport = mMediasoupDevice.createRecvTransport(recvTransportListener, id, iceParameters, iceCandidates, dtlsParameters, mocKSctpParameters);
     }
 
     private SendTransport.Listener sendTransportListener = new SendTransport.Listener() {
@@ -845,11 +847,27 @@ public class RoomClient extends RoomMessageHandler {
         private String listenerTAG = TAG + "_SendTrans";
 
         @Override
-        public String onProduce(Transport transport, String kind, String rtpParameters, String appData) {
+        public String onProduceData(Transport transport, String sctpStreamParameters, String label, String protocol, String appData) {
+            Logger.d(listenerTAG, "onProduceData() called with: transport = [" + transport + "]," +
+                    " sctpStreamParameters = [" + sctpStreamParameters + "]," +
+                    " label = [" + label + "]," +
+                    " protocol = [" + protocol + "]," +
+                    " appData = [" + appData + "]");
             if (mClosed) {
                 return "";
             }
-            Logger.d(listenerTAG, "onProduce() ");
+            return null;
+        }
+
+        @Override
+        public String onProduce(Transport transport, String kind, String rtpParameters, String appData) {
+            Logger.d(listenerTAG, "onProduce() called with: transport = [" + transport + "]," +
+                    " kind = [" + kind + "]," +
+                    " rtpParameters = [" + rtpParameters + "]," +
+                    " appData = [" + appData + "]");
+            if (mClosed) {
+                return "";
+            }
             String producerId = fetchProduceId(req -> {
                 jsonPut(req, "transportId", transport.getId());
                 jsonPut(req, "kind", kind);
