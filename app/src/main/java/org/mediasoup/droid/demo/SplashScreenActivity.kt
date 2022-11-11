@@ -1,15 +1,15 @@
 package org.mediasoup.droid.demo
 
 import android.Manifest
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import org.mediasoup.droid.demo.R
-import android.widget.TextView
 import android.content.Intent
+import android.os.Bundle
 import android.view.View
-import org.mediasoup.droid.demo.RoomActivity
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import com.nabinbhandari.android.permissions.PermissionHandler
 import com.nabinbhandari.android.permissions.Permissions
+import org.mediasoup.droid.lib.RoomClient
+import org.mediasoup.droid.lib.lv.RoomStore
 
 class SplashScreenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,9 +32,29 @@ class SplashScreenActivity : AppCompatActivity() {
         }, 1500)
     }
 
+    private fun loadTestEnv() {
+        var mRoomStore: RoomStore? = null
+        var mRoomClient: RoomClient? = null
+        var roomClientConfig = RoomClientConfig()
+
+
+        roomClientConfig.loadFromShare(applicationContext)
+        roomClientConfig.print()
+
+        //initCamera();
+        mRoomStore = RoomStore()
+        mRoomClient =
+            RoomClient(this, mRoomStore, roomClientConfig.data, roomClientConfig.roomOptions)
+
+        findViewById<View>(R.id.text_ver).setOnClickListener {
+            mRoomClient?.join()
+        }
+    }
+
     private val permissionHandler: PermissionHandler = object : PermissionHandler() {
         override fun onGranted() {
             enterMain()
+            //loadTestEnv
         }
     }
 
