@@ -44,7 +44,7 @@ public class PeerView extends RelativeLayout {
   ViewPeerBinding mBinding;
 
   private void init(Context context) {
-    if(isEnabled()){
+    if(isInEditMode()){
       return;
     }
     mBinding =
