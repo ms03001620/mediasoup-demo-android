@@ -44,6 +44,9 @@ public class PeerView extends RelativeLayout {
   ViewPeerBinding mBinding;
 
   private void init(Context context) {
+    if(isEnabled()){
+      return;
+    }
     mBinding =
         DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.view_peer, this, true);
     mBinding.peerView.videoRenderer.init(PeerConnectionUtils.getEglContext(), null);
