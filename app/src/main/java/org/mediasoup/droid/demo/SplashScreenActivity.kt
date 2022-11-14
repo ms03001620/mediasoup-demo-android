@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.nabinbhandari.android.permissions.PermissionHandler
 import com.nabinbhandari.android.permissions.Permissions
 import org.mediasoup.droid.lib.RoomClient
+import org.mediasoup.droid.lib.UrlFactory
 import org.mediasoup.droid.lib.lv.RoomStore
 
 class SplashScreenActivity : AppCompatActivity() {
@@ -23,7 +24,7 @@ class SplashScreenActivity : AppCompatActivity() {
     private fun initVersion() {
         val tvVer = findViewById<View>(R.id.text_ver) as TextView
         tvVer.text =
-            BuildConfig.VERSION_NAME + "-" + BuildConfig.VERSION_CODE
+            BuildConfig.VERSION_NAME + "-" + BuildConfig.VERSION_CODE + "-" + UrlFactory.HOSTNAME
     }
 
     private fun enterMain() {
