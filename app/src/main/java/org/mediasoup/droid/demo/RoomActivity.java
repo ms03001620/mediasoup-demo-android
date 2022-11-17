@@ -28,6 +28,7 @@ import org.mediasoup.droid.demo.vm.MeProps;
 import org.mediasoup.droid.demo.vm.RoomProps;
 import org.mediasoup.droid.lib.PeerConnectionUtils;
 import org.mediasoup.droid.lib.RoomClient;
+import org.mediasoup.droid.lib.UrlFactory;
 import org.mediasoup.droid.lib.lv.RoomStore;
 import org.mediasoup.droid.lib.model.Me;
 import org.mediasoup.droid.lib.model.Notify;
@@ -76,6 +77,12 @@ public class RoomActivity extends AppCompatActivity {
         mRoomClient = new RoomClient(this, mRoomStore, roomClientConfig.data, roomClientConfig.roomOptions);
         initViewModel();
         mRoomClient.join();
+        initInfo();
+    }
+
+    private void initInfo() {
+        String info = roomClientConfig.data.getRoomId() +", "+ UrlFactory.HOSTNAME;
+        setTitle(info);
     }
 
     private void initCamera() {
