@@ -140,6 +140,9 @@ class RoomMessageHandler {
           mStore.setRoomActiveSpeaker(peerId);
           break;
         }
+      case "downlinkBwe":
+        // Noisy, dismiss
+        break;
       default:
         {
           Logger.v(TAG, "unknown protoo notification.method " + notification.getMethod());

@@ -528,7 +528,7 @@ public class RoomClient extends RoomMessageHandler {
 
         @Override
         public void onRequest(@NonNull Message.Request request, @NonNull Protoo.ServerRequestHandler handler) {
-            Logger.d(TAG, "onRequest() " + request.getData().toString());
+            Logger.d(TAG, "aaaaa1 " + request.getMethod()+", "+request.getData().toString());
             mWorkHandler.post(() -> {
                 try {
                     switch (request.getMethod()) {
@@ -553,7 +553,12 @@ public class RoomClient extends RoomMessageHandler {
 
         @Override
         public void onNotification(@NonNull Message.Notification notification) {
-            Logger.d(TAG, "onNotification() " + notification.getMethod() + ", " + notification.getData().toString());
+            String s = notification.getMethod();
+            if ("activeSpeaker".equals(s) || "downlinkBwe".equals(s)) {
+                Logger.d(TAG, "aaaaa");
+                return;
+            }
+            Logger.d(TAG, "aaaaa2 " + s + ", " + notification.getData().toString());
             mWorkHandler.post(() -> {
                 try {
                     handleNotification(notification);
