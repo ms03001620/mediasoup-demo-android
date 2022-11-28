@@ -69,5 +69,7 @@ dependencies {
     // mediasoup-client from mavenLocal
     implementation 'io.github.haiyangwu:mediasoup-client:3.4.0-SNAPSHOT'
 
+    implementation 'com.tencent.bugly:crashreport:4.1.9' //latest.release
+
 
 }
