@@ -73,6 +73,11 @@ public class PeerConnectionUtils {
                 .createPeerConnectionFactory();
     }
 
+    public PeerConnectionFactory createSharePeerConnectionFactory(Context context){
+        createPeerConnectionFactory(context);
+        return mPeerConnectionFactory;
+    }
+
     private AudioDeviceModule createJavaAudioDevice(Context appContext) {
         Logger.d(TAG, "createJavaAudioDevice()");
         mThreadChecker.checkIsOnValidThread();

@@ -18,6 +18,7 @@ import org.mediasoup.droid.Consumer;
 import org.mediasoup.droid.Device;
 import org.mediasoup.droid.Logger;
 import org.mediasoup.droid.MediasoupException;
+import org.mediasoup.droid.PeerConnection;
 import org.mediasoup.droid.Producer;
 import org.mediasoup.droid.RecvTransport;
 import org.mediasoup.droid.SendTransport;
@@ -601,7 +602,9 @@ public class RoomClient extends RoomMessageHandler {
         try {
             mMediasoupDevice = new Device();
             String routerRtpCapabilities = mProtoo.syncRequest("getRouterRtpCapabilities");
-            mMediasoupDevice.load(routerRtpCapabilities, null);
+            PeerConnection.Options options = new PeerConnection.Options();
+            options.setFactory(localDeviceHelper.peerConnectionUtils.createSharePeerConnectionFactory(mContext));
+            mMediasoupDevice.load(routerRtpCapabilities, options);
             String rtpCapabilities = mMediasoupDevice.getRtpCapabilities();
 
             // Create mediasoup Transport for sending (unless we don't want to produce).
