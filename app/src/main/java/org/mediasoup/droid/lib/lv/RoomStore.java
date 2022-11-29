@@ -178,8 +178,8 @@ public class RoomStore {
     peers.postValue(peersInfo -> peersInfo.removePeer(peerId));
   }
 
-  public void addConsumer(String peerId, String type, Consumer consumer, boolean remotelyPaused) {
-    consumers.postValue(consumers -> consumers.addConsumer(type, consumer, remotelyPaused));
+  public void addConsumer(String peerId, String type, Consumer consumer, boolean remotelyPaused, String kind) {
+    consumers.postValue(consumers -> consumers.addConsumer(type, consumer, remotelyPaused, kind));
     peers.postValue(peers -> peers.addConsumer(peerId, consumer));
   }
 

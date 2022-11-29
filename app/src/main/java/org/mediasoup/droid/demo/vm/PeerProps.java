@@ -133,7 +133,7 @@ public class PeerProps extends PeerViewProps {
         if (wp == null || wp.getConsumer() == null) {
           continue;
         }
-        if (kind.equals(wp.getConsumer().getKind())) {
+        if (kind.equals(wp.getKind())) {
           return wp;
         }
       }

@@ -964,7 +964,7 @@ public class RoomClient extends RoomMessageHandler {
             }, id, producerId, kind, rtpParameters, appData);
 
             mConsumers.put(consumer.getId(), new ConsumerHolder(peerId, consumer));
-            mStore.addConsumer(peerId, type, consumer, producerPaused);
+            mStore.addConsumer(peerId, type, consumer, producerPaused, kind);
 
             // We are ready. Answer the protoo request so the server will
             // resume this Consumer (which was paused for now if video).

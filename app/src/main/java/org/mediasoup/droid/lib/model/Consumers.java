@@ -19,16 +19,22 @@ public class Consumers {
     private JSONArray mScore;
     private int mPreferredSpatialLayer;
     private int mPreferredTemporalLayer;
+    private String mKind;
 
-    ConsumerWrapper(String type, boolean remotelyPaused, Consumer consumer) {
+    ConsumerWrapper(String type, boolean remotelyPaused, Consumer consumer, String kind) {
       mType = type;
       mLocallyPaused = false;
       mRemotelyPaused = remotelyPaused;
       mSpatialLayer = -1;
       mTemporalLayer = -1;
       mConsumer = consumer;
+      mKind = kind;
       mPreferredSpatialLayer = -1;
       mPreferredTemporalLayer = -1;
+    }
+
+    public String getKind() {
+      return mKind;
     }
 
     public String getType() {
@@ -74,8 +80,8 @@ public class Consumers {
     consumers = new ConcurrentHashMap<>();
   }
 
-  public void addConsumer(String type, Consumer consumer, boolean remotelyPaused) {
-    consumers.put(consumer.getId(), new ConsumerWrapper(type, remotelyPaused, consumer));
+  public void addConsumer(String type, Consumer consumer, boolean remotelyPaused, String kind) {
+    consumers.put(consumer.getId(), new ConsumerWrapper(type, remotelyPaused, consumer, kind));
   }
 
   public void removeConsumer(String consumerId) {
