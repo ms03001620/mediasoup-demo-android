@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 @SuppressWarnings("WeakerAccess")
 public class Peer extends Info {
@@ -29,7 +30,7 @@ public class Peer extends Info {
     } else {
       mDevice = DeviceInfo.unknownDevice();
     }
-    consumers = new HashSet<>();
+    consumers = new CopyOnWriteArraySet<>();
   }
 
   @Override
