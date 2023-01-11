@@ -823,10 +823,8 @@ public class RoomClient extends RoomMessageHandler {
         String dtlsParameters = info.optString("dtlsParameters");
         String sctpParameters = info.optString("sctpParameters");
 
-        mSendTransport = mMediasoupDevice.createSendTransport(sendTransportListener, id, iceParameters, iceCandidates, dtlsParameters, mocKSctpParameters);
+        mSendTransport = mMediasoupDevice.createSendTransport(sendTransportListener, id, iceParameters, iceCandidates, dtlsParameters);
     }
-
-    String mocKSctpParameters = "{\"MIS\":1024,\"OS\":1024,\"maxMessageSize\":2000000,\"numStreams\":2048,\"port\":5000}";
 
     @WorkerThread
     private void createRecvTransport() throws ProtooException, JSONException, MediasoupException {
@@ -847,7 +845,7 @@ public class RoomClient extends RoomMessageHandler {
         String dtlsParameters = info.optString("dtlsParameters");
         String sctpParameters = info.optString("sctpParameters");
 
-        mRecvTransport = mMediasoupDevice.createRecvTransport(recvTransportListener, id, iceParameters, iceCandidates, dtlsParameters, mocKSctpParameters);
+        mRecvTransport = mMediasoupDevice.createRecvTransport(recvTransportListener, id, iceParameters, iceCandidates, dtlsParameters);
     }
 
     private SendTransport.Listener sendTransportListener = new SendTransport.Listener() {
